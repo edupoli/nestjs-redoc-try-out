@@ -1,4 +1,4 @@
-import { RedocOptions } from "redoc-try-it-out";
+import { RedocOptions } from "redocly-try-it-out";
 import { Language } from "../code-snippet-gen/code-gen";
 
 export interface RedocModuleOptions extends RedocOptions {
