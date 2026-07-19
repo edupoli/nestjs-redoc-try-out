@@ -54,7 +54,7 @@
     "express-handlebars": "^5.3.4",
     "httpsnippet": "^2.0.0",
     "openapi-sampler": "^1.1.0",
-    "redocly-try-it-out": "^1.0.11"
+    "redocly-try-it-out": "github:edupoli/redoc-try-it-out"
   },
   "peerDependencies": {
     "@nestjs/common": "^8.0.11",
