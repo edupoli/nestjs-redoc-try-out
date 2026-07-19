@@ -52,7 +52,13 @@ class OpenApiWrapper {
             return resolve;
         }
         if (resolve['$ref']) {
-            return this.resolveScheme(this.resolveRef(resolve['$ref']));
+            const refPath = resolve['$ref'];
+            const schemaName = refPath.split('/').pop();
+            const resolved = this.resolveScheme(this.resolveRef(refPath));
+            if (resolved && !resolved.title && schemaName) {
+                resolved.title = schemaName;
+            }
+            return resolved;
         }
         const schema = resolve;
         const resolveArray = (arr) => arr === null || arr === void 0 ? void 0 : arr.forEach((item, index) => {

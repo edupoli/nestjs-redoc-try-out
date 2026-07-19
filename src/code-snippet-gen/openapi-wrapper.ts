@@ -83,7 +83,13 @@ export class OpenApiWrapper {
         }
 
         if ( resolve['$ref'] ) {
-            return this.resolveScheme(this.resolveRef(resolve['$ref']));
+            const refPath = resolve['$ref'];
+            const schemaName = refPath.split('/').pop();
+            const resolved = this.resolveScheme(this.resolveRef(refPath));
+            if ( resolved && !resolved.title && schemaName ) {
+                resolved.title = schemaName;
+            }
+            return resolved;
         }
 
         const schema = resolve as SchemaObject;
