@@ -35,6 +35,7 @@ export declare class OpenApiWrapper {
     get security(): SecurityRequirementObject[];
     get securityRequirements(): string[];
     get baseUrl(): string;
+    private resolveRef;
     private resolveScheme;
     private resolveRequestBodyReferences;
     private resolveBaseUrl;

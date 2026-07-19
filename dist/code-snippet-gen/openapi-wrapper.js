@@ -44,12 +44,40 @@ class OpenApiWrapper {
         }
         return server === null || server === void 0 ? void 0 : server.url;
     }
+    resolveRef(ref) {
+        return ref.split('/').reduce((previous, current) => previous === '#' ? __classPrivateFieldGet(this, _OpenApiWrapper_openApi, "f")[current] : previous[current]);
+    }
     resolveScheme(resolve) {
-        if (!resolve['$ref']) {
+        if (!resolve) {
             return resolve;
         }
-        const schema = resolve['$ref'].split('/').reduce((previous, current) => previous === '#' ? __classPrivateFieldGet(this, _OpenApiWrapper_openApi, "f")[current] : previous[current]);
-        return this.resolveScheme(schema);
+        if (resolve['$ref']) {
+            return this.resolveScheme(this.resolveRef(resolve['$ref']));
+        }
+        const schema = resolve;
+        const resolveArray = (arr) => arr === null || arr === void 0 ? void 0 : arr.forEach((item, index) => {
+            if (item)
+                arr[index] = this.resolveScheme(item);
+        });
+        const resolveMap = (obj) => {
+            if (obj) {
+                for (const key of Object.keys(obj)) {
+                    if (obj[key])
+                        obj[key] = this.resolveScheme(obj[key]);
+                }
+            }
+        };
+        resolveArray(schema.oneOf);
+        resolveArray(schema.anyOf);
+        resolveArray(schema.allOf);
+        if (schema.items) {
+            schema.items = this.resolveScheme(schema.items);
+        }
+        resolveMap(schema.properties);
+        if (schema.additionalProperties && typeof schema.additionalProperties === 'object') {
+            schema.additionalProperties = this.resolveScheme(schema.additionalProperties);
+        }
+        return schema;
     }
     resolveRequestBodyReferences(requestBody) {
         const content = (requestBody === null || requestBody === void 0 ? void 0 : requestBody.content) || {};
