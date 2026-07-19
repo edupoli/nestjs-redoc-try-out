@@ -16,6 +16,7 @@ exports.AdapterHandler = exports.NotImplementedError = void 0;
 const path_1 = __importDefault(require("path"));
 const redocly_try_it_out_1 = require("redocly-try-it-out");
 const render_util_1 = require("../utils/render.util");
+const fs_1 = require("fs");
 class NotImplementedError extends Error {
 }
 exports.NotImplementedError = NotImplementedError;
@@ -92,9 +93,11 @@ class ExpressAdapterHandler extends AdapterHandler {
     }
     setupJS() {
         const pathToModule = require.resolve("redocly-try-it-out");
+        const filePath = path_1.default.join(path_1.default.dirname(pathToModule), redocly_try_it_out_1.tryItOutJsMinFileName);
+        const fileContent = (0, fs_1.readFileSync)(filePath, "utf-8");
         this.httpAdapter.get(`${this.path}/${redocly_try_it_out_1.tryItOutJsMinFileName}`, (req, res) => {
-            res.setHeader("Content-Type", "plain/text");
-            res.sendFile(path_1.default.join(path_1.default.dirname(pathToModule), redocly_try_it_out_1.tryItOutJsMinFileName));
+            res.type("application/javascript");
+            res.send(fileContent);
         });
     }
     setup() {

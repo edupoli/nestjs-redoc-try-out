@@ -5,6 +5,7 @@ import { tryItOutJsMinFileName } from "redocly-try-it-out";
 import { RedocDocument } from "../interfaces/redoc-document.interface";
 import { RedocModuleOptions } from "../interfaces/redoc-module-options.interface";
 import { renderRedocView } from "../utils/render.util";
+import { readFileSync } from "fs";
 
 export class NotImplementedError extends Error {}
 
@@ -104,16 +105,16 @@ class ExpressAdapterHandler extends AdapterHandler {
 
   private setupJS(): void {
     const pathToModule = require.resolve("redocly-try-it-out");
+    const filePath = pathModule.join(
+      pathModule.dirname(pathToModule),
+      tryItOutJsMinFileName
+    );
+    const fileContent = readFileSync(filePath, "utf-8");
     this.httpAdapter.get(
       `${this.path}/${tryItOutJsMinFileName}`,
       (req: Request, res: Response) => {
-        res.setHeader("Content-Type", "plain/text");
-        res.sendFile(
-          pathModule.join(
-            pathModule.dirname(pathToModule),
-            tryItOutJsMinFileName
-          )
-        );
+        res.type("application/javascript");
+        res.send(fileContent);
       }
     );
   }
